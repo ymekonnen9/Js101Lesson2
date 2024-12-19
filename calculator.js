@@ -1,51 +1,68 @@
 const readline = require("readline-sync");
+const MESSAGES = require("./calculator_messages.json");
+const LANGUAGE = "en";
 
 function prompt(message){
   console.log(`=>${message}`);
 }
 
 function isInvalid(num){
-  return num.trim() === "" || Number.isNaN(num);
+  return num.trimStart()==="" || Number.isNaN(Number(num));
 }
 
-prompt("Enter the first number: ");
-let number1 = readline.question();
-
-while(isInvalid(number1)){
-  prompt("Hmm... that doesn't look like a valid number.");
-  number1 = readline.question();
+function messages(message, lang='en') {
+  return MESSAGES[lang][message];
 }
 
-prompt("Enter the second number: ");
-let number2 = readline.question();
+while(true){
+  prompt(messages('welcome'));
 
-while(isInvalid(number2)){
-  prompt("Hmm... that doesn't look like a valid number.");
-  number2 = readline.question();
+  prompt("Enter the first number: ");
+  let firstnum = readline.question();
+  while(isInvalid(firstnum)){
+    prompt(messages("isInvalid"));
+    firstnum = readline.question();
+  }
+
+  prompt("Enter the second number: ");
+  let secondnum = readline.question();
+  while(isInvalid(secondnum)){
+    prompt(messages("isInvalid"));
+    secondnum = readline.question();
+  }
+
+  prompt("Please enter an operator: \n1 - for addition \n2 - for subtraction \n3 - for multiplication\n4 - for division");
+  let operation = readline.question();
+  while(![1,2,3,4].includes(Number(operation))){
+    prompt("Please enter a valid operation: ");
+    operation = readline.question();
+  }
+
+  let output;
+  switch(operation){
+    case '1':
+      output = Number(firstnum) + Number(secondnum);
+      break;
+    case '2':
+      output = Number(firstnum) - Number(secondnum);
+      break;
+    case '3':
+      output = Number(firstnum) * Number(secondnum);
+      break;
+    case '4':
+      output = Number(firstnum) / Number(secondnum);
+      break;
+  }
+
+  console.log(`The output is ${output}`);
+
+  prompt('Would you like to perform another operation? (y/n)');
+  let answer = readline.question();
+
+  if(answer !== 'y' ){
+    break;
+  }
+
+
 }
 
-prompt('What operation would you like to perform?\n1) Add 2) Subtract 3) Multiply 4) Divide');
- let operation = readline.question();
-
- while(![1,2,3,4].includes(Number(operation))){
-  prompt("Humm please enter the correct number");
-  operation = readline.question();
- }
-
- let output;
- switch(operation){
-  case '1':
-    output = Number(number1) + Number(number2);
-    break;
-  case '2':
-    output = Number(number1) - Number(number2);
-    break;
-  case '3':
-    output = Number(number1) * Number(number2);
-    break;
-  case '4':
-    output = Number(number1) / Number(number2);
-    break;
- }
-
- prompt(`The result ${output}`);
